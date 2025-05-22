@@ -48,12 +48,12 @@ jobs:
       
       - name: Build and tag Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-prometheus:$VERSION
-          docker tag {{ secrets.DOCKER_USERNAME }}/flask-prometheus:$VERSION ${{ secrets.DOCKER_USERNAME }}/flask-prometheus:latest
+          docker build -t netkovjordan/flask-prometheus:$VERSION
+          docker tag netkovjordan/flask-prometheus:$VERSION netkovjordan/flask-prometheus:latest
       
       - name: Push docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/flask-prometheus:$VERSION
-          docker push ${{ secrets.DOCKER_USERNAME }}/flask-prometheus:latest
+          docker push netkovjordan/flask-prometheus:$VERSION
+          docker push netkovjordan/flask-prometheus:latest
 
          
