@@ -51,7 +51,7 @@ jobs:
           docker build -t netkovjordan/flask-prometheus:$VERSION
           docker tag netkovjordan/flask-prometheus:$VERSION netkovjordan/flask-prometheus:latest
       
-      - name: Push docker image
+      - name: Push docker image to repo
         run: |
           docker push netkovjordan/flask-prometheus:$VERSION
           docker push netkovjordan/flask-prometheus:latest
