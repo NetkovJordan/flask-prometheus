@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, Response
 from prometheus_client import Gauge, generate_latest, CONTENT_TYPE_LATEST
 import psutil
@@ -7,12 +8,14 @@ import threading
 
 app = Flask(__name__)
 
+# Metrics
 cpu_usage_gauge = Gauge('app_cpu_usage_percent', 'CPU usage percentage of the application')
 memory_usage = Gauge('app_memory_usage_mb', 'Memory usage in MB')
 disk_usage = Gauge('app_disk_usage_percent', 'Disk usage percentage')
 net_sent = Gauge('app_network_bytes_sent', 'Network bytes sent')
 net_recv = Gauge('app_network_bytes_recv', 'Network bytes received')
 
+# Background threads
 def update_cpu_usage():
     while True:
         cpu_percent = psutil.cpu_percent(interval=1)
@@ -33,6 +36,7 @@ def update_system_metrics():
 threading.Thread(target=update_cpu_usage, daemon=True).start()
 threading.Thread(target=update_system_metrics, daemon=True).start()
 
+# Routes
 @app.route('/')
 def index():
     return "Hello from Flask with Prometheus metrics!"
@@ -45,5 +49,14 @@ def data():
 def metrics_endpoint():
     return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
+# Entry point
+def main():
+    host = os.getenv("FLASK_RUN_HOST", "0.0.0.0")
+    port = int(os.getenv("FLASK_RUN_PORT", 5000))
+    debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+
+    print(f"Starting Flask app on {host}:{port} (debug={debug})")
+    app.run(host=host, port=port, debug=debug)
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    main()
